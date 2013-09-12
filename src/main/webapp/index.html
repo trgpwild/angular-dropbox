@@ -8,15 +8,14 @@
 <body ng-controller="MainController">
 	<table>
 		<tr ng-repeat="file in files">
-			<td><a ng-click="edit(file)">{{file.name}}</a></td>
-			<td>{{file.phone}}</td>
-			<td><a class="btn btn-danger" ng-click="remove(file)">Remove</a></td>
+			<td>{{file}}</td>
 		</tr>
 	</table>
 	<div>
-		<div><input type="text" ng-model="file.name" name="name"/></div>
-		<div><input type="text" ng-model="file.phone" name="phone"/></div>
-		<div><input type="button" ng-click="add()" value="SAVE" class="btn"/></div>
+		<div><input type="text" ng-model="key" name="key"/></div>
+		<div><input type="text" ng-model="secret" name="secret"/></div>
+		<div><input type="button" ng-click="step1()" value="step1" class="btn"/></div>
+		<a href="{{url}}" target="_blank">{{url}}</a>
 	</div>
 	<script src="lib/angular.js"></script>
 	<script src="lib/angular-resource.js"></script>
@@ -25,30 +24,21 @@
 		$app=angular.module('app',['ngResource']);
 	
 		$app.factory('TokenGeneratorService', ['$resource', function($resource) {
-		    return $resource('rest/token/:id', {id: '@id'});
+		    return $resource('rest/token/:p1/:p2/', {p1: '@p1', p2: '@p2'});
 		}]);
 
 		$app.factory('FileStreamService', ['$resource', function($resource) {
-		    return $resource('rest/file/:id', {id: '@id'});
+		    return $resource('rest/file/:p1/:p2/', {p1: '@p1', p2: '@p2'});
 		}]);
 	
 		var MainController = function($scope, TokenGeneratorService, FileStreamService) {
 			
-			$scope.files = FileStreamService.query();
-	
-			$scope.file = new FileStreamService();
-	
-			$scope.edit = function(file) {
-				$scope.file = file;
-			};
-			
-			$scope.newOne = function() {
-				$scope.file = new FileStreamService();
-			};
-	
-			$scope.add = function() {
-				$scope.file.$save(function() {
-					$scope.files = FileStreamService.query();
+			$scope.key="dhemrvegc5m9ume";
+			$scope.secret="eqx8t406kpsxxw3";
+
+			$scope.step1 = function() {
+				TokenGeneratorService.get({p1:$scope.key,p2:$scope.secret}, function(token){
+					$scope.url = token.value;
 				});
 			};
 			

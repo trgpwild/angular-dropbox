@@ -29,14 +29,16 @@ public class TokenGeneratorController {
     @GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{key}/{secret}")
-	public String url(@PathParam("key") String key, @PathParam("secret") String secret, @Context HttpServletRequest req) throws JsonGenerationException, JsonMappingException, IOException {
+	public Token url(@PathParam("key") String key, @PathParam("secret") String secret, @Context HttpServletRequest req) throws JsonGenerationException, JsonMappingException, IOException {
 		DbxAppInfo appInfo = new DbxAppInfo(key, secret);
         DbxRequestConfig config = new DbxRequestConfig("angular-dropbox/1.0", Locale.getDefault().toString());
         DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(config, appInfo);
         String authorizeUrl = webAuth.start();
         HttpSession session = req.getSession(true);
         session.setAttribute("webAuth", webAuth);
-        return authorizeUrl;
+        Token token = new Token();
+        token.value = authorizeUrl;
+        return token;
 	}
 
 	@GET
@@ -49,6 +51,10 @@ public class TokenGeneratorController {
         DbxAuthFinish authFinish;
         authFinish = webAuth.finish(code);
 		return authFinish.accessToken;
+	}
+	
+	class Token {
+		public String value;
 	}
 
 }
