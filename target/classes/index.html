@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<title>AngularJs Dropbox</title>
+	<link href="css/bootstrap-2.3.2.css" rel="stylesheet">
+	<link href="css/bootstrap-responsive-2.3.2.css" rel="stylesheet">
+</head>
+<body ng-controller="MainController">
+	<table>
+		<tr ng-repeat="file in files">
+			<td><a ng-click="edit(file)">{{file.name}}</a></td>
+			<td>{{file.phone}}</td>
+			<td><a class="btn btn-danger" ng-click="remove(file)">Remove</a></td>
+		</tr>
+	</table>
+	<div>
+		<div><input type="text" ng-model="file.name" name="name"/></div>
+		<div><input type="text" ng-model="file.phone" name="phone"/></div>
+		<div><input type="button" ng-click="add()" value="SAVE" class="btn"/></div>
+	</div>
+	<script src="lib/angular.js"></script>
+	<script src="lib/angular-resource.js"></script>
+	<script type="text/javascript">
+
+		$app=angular.module('app',['ngResource']);
+	
+		$app.factory('TokenGeneratorService', ['$resource', function($resource) {
+		    return $resource('rest/token/:id', {id: '@id'});
+		}]);
+
+		$app.factory('FileStreamService', ['$resource', function($resource) {
+		    return $resource('rest/file/:id', {id: '@id'});
+		}]);
+	
+		var MainController = function($scope, TokenGeneratorService, FileStreamService) {
+			
+			$scope.files = FileStreamService.query();
+	
+			$scope.file = new FileStreamService();
+	
+			$scope.edit = function(file) {
+				$scope.file = file;
+			};
+			
+			$scope.newOne = function() {
+				$scope.file = new FileStreamService();
+			};
+	
+			$scope.add = function() {
+				$scope.file.$save(function() {
+					$scope.files = FileStreamService.query();
+				});
+			};
+			
+		};
+		
+	</script>
+</body>
+</html>
