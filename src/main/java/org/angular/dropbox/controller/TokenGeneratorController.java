@@ -44,13 +44,15 @@ public class TokenGeneratorController {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{code}")
-	public String url(@PathParam("code") String code, @Context HttpServletRequest req) throws JsonGenerationException, JsonMappingException, IOException, DbxException {
+	public Token url(@PathParam("code") String code, @Context HttpServletRequest req) throws JsonGenerationException, JsonMappingException, IOException, DbxException {
         HttpSession session = req.getSession(true);
         DbxWebAuthNoRedirect webAuth = (DbxWebAuthNoRedirect) session.getAttribute("webAuth");
         code = code.trim();
         DbxAuthFinish authFinish;
         authFinish = webAuth.finish(code);
-		return authFinish.accessToken;
+        Token token = new Token();
+        token.value = authFinish.accessToken;
+        return token;
 	}
 	
 	class Token {
