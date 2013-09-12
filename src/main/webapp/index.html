@@ -6,12 +6,6 @@
 	<link href="css/bootstrap-responsive-2.3.2.css" rel="stylesheet">
 </head>
 <body ng-controller="MainController">
-	<table>
-		<tr ng-repeat="file in files">
-			<td>{{file.name}}</td>
-			<td>{{file.humanSize}}</td>
-		</tr>
-	</table>
 	<div>
 		<div>Dropbox - Key: <input type="text" ng-model="key" name="key"/></div>
 		<div>Dropbox - Secret: <input type="text" ng-model="secret" name="secret"/></div>
@@ -21,6 +15,14 @@
 		<div><input type="button" ng-click="step2()" value="step2" class="btn"/></div>
 		<div>Dropbox - TOKEN: <input type="text" ng-model="token" name="token"/></div>
 		<div><input type="button" ng-click="listFiles()" value="List Files" class="btn"/></div>
+		<table class="table">
+			<tr ng-repeat="file in files">
+				<td><a ng-click="openImg(file.name)">{{file.name}}</a></td>
+				<td>{{file.humanSize}}</td>
+			</tr>
+		</table>
+		{{imgName}}
+		<img src="{{imgUrl}}" alt="imgName" width="600" />
 	</div>
 	<script src="lib/angular.js"></script>
 	<script src="lib/angular-resource.js"></script>
@@ -38,12 +40,6 @@
 	
 		var MainController = function($scope, TokenGeneratorService, FileStreamService) {
 			
-			$scope.files = ['teste'];
-			
-			$scope.key="dhemrvegc5m9ume";
-			$scope.secret="eqx8t406kpsxxw3";
-			$scope.token="9VHF-d78gp0AAAAAAAAAAUffVWd8Jz4NRzyQNuDZsfO0YGY0DqWbNuiIqTzJ7PGq";
-
 			$scope.step1 = function() {
 				TokenGeneratorService.get({p1:$scope.key,p2:$scope.secret}, function(token){
 					$scope.url = token.value;
@@ -57,9 +53,12 @@
 			};
 
 			$scope.listFiles = function() {
-				FileStreamService.get({p1:$scope.token}, function(files){
-					$scope.files = files;
-				});
+				$scope.files = FileStreamService.query({p1:$scope.token});
+			};
+
+			$scope.openImg = function(name) {
+				$scope.imgName = name;
+				$scope.imgUrl = 'rest/file/' + $scope.token + '/' + name;
 			};
 
 		};
