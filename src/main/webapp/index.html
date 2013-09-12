@@ -8,7 +8,8 @@
 <body ng-controller="MainController">
 	<table>
 		<tr ng-repeat="file in files">
-			<td>{{file}}</td>
+			<td>{{file.name}}</td>
+			<td>{{file.humanSize}}</td>
 		</tr>
 	</table>
 	<div>
@@ -41,6 +42,7 @@
 			
 			$scope.key="dhemrvegc5m9ume";
 			$scope.secret="eqx8t406kpsxxw3";
+			$scope.token="9VHF-d78gp0AAAAAAAAAAUffVWd8Jz4NRzyQNuDZsfO0YGY0DqWbNuiIqTzJ7PGq";
 
 			$scope.step1 = function() {
 				TokenGeneratorService.get({p1:$scope.key,p2:$scope.secret}, function(token){

@@ -32,15 +32,11 @@ public class FileStreamController {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{token}")
-	public List<String> list(@PathParam("token") String token) throws JsonGenerationException, JsonMappingException, IOException {
+	public List<DbxEntry> list(@PathParam("token") String token) throws JsonGenerationException, JsonMappingException, IOException {
 		try {
-			List<String> filenames = new ArrayList<String>();
-			for (DbxEntry child : listFiles(token)) {
-				filenames.add(child.name);
-			}
-			return filenames;
+			return listFiles(token);
 		} catch (Exception e) {
-			return new ArrayList<String>();
+			return new ArrayList<DbxEntry>();
 		}
 	}
 
