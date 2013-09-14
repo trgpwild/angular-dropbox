@@ -24,6 +24,8 @@ import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.DbxEntry.File;
+import com.dropbox.core.DbxThumbnailFormat;
+import com.dropbox.core.DbxThumbnailSize;
 
 @Component
 @Path("/file")
@@ -72,7 +74,9 @@ public class FileStreamController {
 			if (child.name.equals(filename) && child.isFile()) {
 				File file = child.asFile();
 				ServletOutputStream out = response.getOutputStream();
-				client.getFile(file.path, file.rev, out);
+				DbxThumbnailSize size = new DbxThumbnailSize("m", 175, 240);
+				client.getThumbnail(size, DbxThumbnailFormat.JPEG, file.path, file.rev, out);
+				//client.getFile(file.path, file.rev, out);
 			}
 		}
 	}
