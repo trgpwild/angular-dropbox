@@ -22,7 +22,7 @@
 			</tr>
 		</table>
 		{{imgName}}
-		<img src="{{imgUrl}}" alt="imgName" width="600" />
+		<img src="{{imgUrl}}" alt="imgName" />
 	</div>
 	<script src="lib/angular.js"></script>
 	<script src="lib/angular-resource.js"></script>
@@ -40,6 +40,10 @@
 	
 		var MainController = function($scope, TokenGeneratorService, FileStreamService) {
 			
+			$scope.key="dhemrvegc5m9ume";
+			$scope.secret="eqx8t406kpsxxw3";
+			$scope.token="9VHF-d78gp0AAAAAAAAAAUffVWd8Jz4NRzyQNuDZsfO0YGY0DqWbNuiIqTzJ7PGq";
+
 			$scope.step1 = function() {
 				TokenGeneratorService.get({p1:$scope.key,p2:$scope.secret}, function(token){
 					$scope.url = token.value;

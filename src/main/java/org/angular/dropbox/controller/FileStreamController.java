@@ -42,7 +42,6 @@ public class FileStreamController {
 		}
 	}
 
-
 	@GET
 	@Produces("application/image")
 	@Path("/{token}/{name}")
@@ -61,24 +60,22 @@ public class FileStreamController {
 		return listing.children;
 	}
 
-
 	private DbxClient getClient(String token) {
 		DbxRequestConfig config = new DbxRequestConfig("angular-dropbox/1.0", Locale.getDefault().toString());
 		DbxClient client = new DbxClient(config, token);
 		return client;
 	}
 
-	private void setResponse(String token, String filename, HttpServletResponse response) throws DbxException, IOException {
+	private void write(String filename, String token, ServletOutputStream out) throws DbxException, IOException {
 		DbxClient client = getClient(token);
-		for (DbxEntry child : listFiles(token)) {
-			if (child.name.equals(filename) && child.isFile()) {
-				File file = child.asFile();
-				ServletOutputStream out = response.getOutputStream();
-				DbxThumbnailSize size = new DbxThumbnailSize("m", 175, 240);
-				client.getThumbnail(size, DbxThumbnailFormat.JPEG, file.path, file.rev, out);
-				//client.getFile(file.path, file.rev, out);
-			}
-		}
+		DbxThumbnailSize size = new DbxThumbnailSize("m", 175, 240);
+		DbxThumbnailFormat format = DbxThumbnailFormat.bestForFileName(filename, null);
+		client.getThumbnail(size, format, "/" + filename, null, out);
+	}
+
+	private void setResponse(String token, String filename, HttpServletResponse response) throws DbxException, IOException {
+		ServletOutputStream out = response.getOutputStream();
+		write(filename, token, out);
 	}
 
 }
